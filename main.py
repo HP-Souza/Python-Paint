@@ -17,7 +17,7 @@ def iniciar_figura_nova(event):
 
 # Quando mouse é movido com o botão pressionado
 def atualizar_figura_nova(event):
-    global figura_nova
+    global figura_nova, raio
     if figura_nova[0] == "rabisco":
         figura_nova[1].append((event.x, event.y))
     elif figura_nova[0] == "linha":
@@ -35,7 +35,7 @@ def atualizar_figura_nova(event):
 # Quando mouse é solto
 def incluir_figura_nova(event): 
     if not incompleta(figura_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
-        figuras.append(figura_nova) 
+        figuras.append(figura_nova)
     desenhar_figuras()
 
 def desenhar_figuras():
@@ -50,7 +50,8 @@ def desenhar_figuras():
         elif fig == "retângulo":
             canvas.create_rectangle(values[0], values[1], values[2], values[3], outline = color, fill = preenche)
         elif fig == "círculo":
-            canvas.create_oval(values[0]-values[4], values[1]-values[4], values[2]+values[4], values[3]+values[4], outline = color, fill = preenche)
+            r = values[4]
+            canvas.create_oval(values[0]-r, values[1]-r, values[0]+r, values[1]+r, outline = color, fill = preenche)
 
 def desenhar_figura_nova():
     fig, values, color, preenche = figura_nova
@@ -63,7 +64,8 @@ def desenhar_figura_nova():
     elif fig == "retângulo":
         canvas.create_rectangle(values[0], values[1], values[2], values[3], dash=(4, 2), outline = color, fill = preenche)
     elif fig == "círculo":
-            canvas.create_oval(values[0]-values[4], values[1]-values[4], values[2]+values[4], values[3]+values[4], outline = color, fill = preenche)
+            r= values[4]
+            canvas.create_oval(values[0]-r, values[1]-r, values[0]+r, values[1]+r, outline = color, fill = preenche)
 
 def incompleta(figura):
     fig, values, cor, preenche = figura
