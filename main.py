@@ -1,137 +1,154 @@
-from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 
-# Quando mouse é pressionado
-def iniciar_figura_nova(event): 
-    global figura_nova
-    if tipo_figura_var.get() == 'Linha':
-        figura_nova = ("linha", (event.x, event.y, event.x, event.y), cor_pincel_var.get(), cor_preenche_var.get())
-    elif tipo_figura_var.get() == 'Rabisco':
-        figura_nova = ("rabisco", [(event.x, event.y)], cor_pincel_var.get(), cor_preenche_var.get())
-    elif tipo_figura_var.get() == 'Oval':
-        figura_nova = ("oval", (event.x, event.y, event.x, event.y), cor_pincel_var.get(), cor_preenche_var.get())
-    elif tipo_figura_var.get() == 'Retângulo':
-        figura_nova = ("retângulo", (event.x, event.y, event.x, event.y), cor_pincel_var.get(), cor_preenche_var.get())
-    elif tipo_figura_var.get() == 'Círculo':
-        figura_nova = ("círculo", (event.x, event.y, event.x, event.y), cor_pincel_var.get(), cor_preenche_var.get())
+class Figura:
+    def __init__(self, x_inicial, y_inicial, cor_pincel, cor_preenchimento):
+        self.x1 = x_inicial
+        self.y1 = y_inicial
+        self.x2 = x_inicial
+        self.y2 = y_inicial
+        self.cor_pincel = cor_pincel
+        self.cor_preenchimento = cor_preenchimento
 
-# Quando mouse é movido com o botão pressionado
-def atualizar_figura_nova(event):
-    global figura_nova, raio
-    if figura_nova[0] == "rabisco":
-        figura_nova[1].append((event.x, event.y))
-    elif figura_nova[0] == "linha":
-        figura_nova = ("linha", (figura_nova[1][0], figura_nova[1][1], event.x, event.y), cor_pincel_var.get(), cor_preenche_var.get())
-    elif figura_nova[0] == "oval":
-        figura_nova = ("oval", (figura_nova[1][0], figura_nova[1][1], event.x, event.y), cor_pincel_var.get(), cor_preenche_var.get())
-    elif figura_nova[0] == "retângulo":
-        figura_nova = ("retângulo", (figura_nova[1][0], figura_nova[1][1], event.x, event.y), cor_pincel_var.get(), cor_preenche_var.get())
-    elif figura_nova[0] == "círculo":
-        raio = ((figura_nova[1][0] - figura_nova[1][2])**2 + (figura_nova[1][1] - figura_nova[1][3])**2)**0.5
-        figura_nova = ("círculo", (figura_nova[1][0], figura_nova[1][1], event.x, event.y, raio), cor_pincel_var.get(), cor_preenche_var.get())
-    desenhar_figuras()
-    desenhar_figura_nova()
+    def atualizar_coordenadas(self, x_atual, y_atual):
+        self.x2 = x_atual
+        self.y2 = y_atual
 
-# Quando mouse é solto
-def incluir_figura_nova(event): 
-    if not incompleta(figura_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
-        figuras.append(figura_nova)
-    desenhar_figuras()
+    def desenho(self, canvas, tracejado=None):
+        pass
 
-def desenhar_figuras():
-    canvas.delete("all")
-    for fig, values, color, preenche in figuras:
-        if fig == "linha":
-            canvas.create_line(values[0], values[1], values[2], values[3], fill = color)
-        elif fig == "rabisco":
-            canvas.create_line(values, fill = color)
-        elif fig == "oval":
-            canvas.create_oval(values[0], values[1], values[2], values[3], outline = color, fill = preenche)
-        elif fig == "retângulo":
-            canvas.create_rectangle(values[0], values[1], values[2], values[3], outline = color, fill = preenche)
-        elif fig == "círculo":
-            r = values[4]
-            canvas.create_oval(values[0]-r, values[1]-r, values[0]+r, values[1]+r, outline = color, fill = preenche)
+    def figura_incompleta(self):
+        return (self.x1, self.y1) == (self.x2, self.y2)
+    
+class Linha(Figura):
 
-def desenhar_figura_nova():
-    fig, values, color, preenche = figura_nova
-    if fig == "linha":
-        canvas.create_line(values[0], values[1], values[2], values[3], dash=(4, 2), fill = color)
-    elif fig == "rabisco":
-        canvas.create_line(values, dash=(4, 2), fill = color)
-    elif fig == "oval":
-        canvas.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2), outline = color, fill = preenche)
-    elif fig == "retângulo":
-        canvas.create_rectangle(values[0], values[1], values[2], values[3], dash=(4, 2), outline = color, fill = preenche)
-    elif fig == "círculo":
-            r= values[4]
-            canvas.create_oval(values[0]-r, values[1]-r, values[0]+r, values[1]+r, outline = color, fill = preenche)
+    def desenhar(self, canvas, tracejado=None):
+        canvas.create_line(self.x1, self.y1, self.x2, self.y2, fill=self.cor_pincel, dash=tracejado)
 
-def incompleta(figura):
-    fig, values, cor, preenche = figura
-    if fig == "linha":
-        return (values[0], values[1]) == (values[2], values[3])
-    elif fig == "rabisco":
-        return len(values) <= 1
-    elif fig == "oval":
-        return (values[0], values[1]) == (values[2], values[3])
-    elif fig == "retângulo":
-        return (values[0], values[1]) == (values[2], values[3])
-    elif fig == "círculo":
-        return (values[0], values[1]) == (values[2], values[3])
+class Rabisco(Figura):
+    def __init__(self, x_inicial, y_inicial, cor_pincel, cor_preenchimento):
+        super().__init__(x_inicial, y_inicial, cor_pincel, cor_preenchimento)
+        self.pontos = [(x_inicial, y_inicial)]
+
+    def atualizar_coordenadas(self, x_atual, y_atual):
+        self.pontos.append((x_atual,y_atual))
+
+    def desenhar(self, canvas, tracejado=None):
+        if len(self.pontos) > 1:
+            canvas.create_line(self.pontos, fill=self.cor_pincel, dash=tracejado)
+
+    def figura_incompleta(self):
+        return len(self.pontos) <= 1
+
+class Retangulo(Figura):
+
+    def desenhar(self, canvas, tracejado=None):
+        canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2,outline=self.cor_pincel,
+                          fill=self.cor_preenchimento, dash=tracejado)
+
+class Oval(Figura):
+
+    def desenhar(self, canvas, tracejado=None):
+        canvas.create_oval(self.x1, self.y1, self.x2, self.y2,outline=self.cor_pincel,
+                          fill=self.cor_preenchimento, dash=tracejado)
+        
+class Circulo(Figura):
+
+    def desenhar(self, canvas, tracejado=None):
+        raio = ((self.x1 - self.x2)**2 + (self.y1 - self.y2)**2)**0.5
+        canvas.create_oval(self.x1 - raio, self.y1 - raio, self.x1 + raio, self.y1 + raio, 
+                           outline=self.cor_pincel, fill=self.cor_preenchimento, dash=tracejado)
+        
+
+        
+class PaintTkinter:
+    def __init__(self, janela_raiz):
+
+        self.janela = janela_raiz
+        self.janela.title("Python Paint")
+
+        self.figuras = []
+        self.figura_nova = None
+
+        self.mapeamento_formas = {'Rabisco': Rabisco,
+                       'Linha': Linha,
+                       'Retângulo': Retangulo,
+                       'Oval': Oval,
+                       'Círculo': Circulo
+                       }
+        
+        self.configurar_interface()
+
+        self.vincular_eventos()
+
+    def configurar_interface(self):
+        self.frame = ttk.Frame(self.janela)
+        self.frame.pack(padx=6, pady=6)
+
+        self.tipo_figura_var = tk.StringVar(value='Rabisco')
+        self.cor_pincel_var = tk.StringVar(value='black')
+        self.cor_preenchimento_var = tk.StringVar(value=None)
+
+        ttk.Label(self.frame, text='Formas:').grid(column=0, row=0, sticky=tk.W, padx=6)
+        self.forma_menu = ttk.OptionMenu(self.frame, self.tipo_figura_var, 'Rabisco',
+                                          *self.mapeamento_formas.keys())
+        self.forma_menu.grid(column=1, row=0, sticky=tk.W, padx=6)
+
+        ttk.Label(self.frame, text='Cores:').grid(column=2, row=0, sticky=tk.W, padx=6)
+        self.cor_menu = ttk.OptionMenu(self.frame, self.cor_pincel_var, 'black',
+                                        'black', 'red', 'green', 'blue', 'yellow')
+        self.cor_menu.grid(column=3, row=0, sticky=tk.W, padx=6)
+
+        ttk.Label(self.frame, text='Preenchimento:').grid(column=4, row=0, sticky=tk.W, padx=6)
+        self.preenche_menu = ttk.OptionMenu(self.frame, self.cor_preenchimento_var, None,
+                                             None, 'black', 'red', 'green', 'blue', 'yellow')
+        self.preenche_menu.grid(column=5, row=0, sticky=tk.W, padx=6)
+
+        ttk.Button(self.frame, text='Limpar tela', command=self.apagar_tudo).grid(column=6, row=0, sticky=tk.W, padx=6)
+
+        self.canvas = tk.Canvas(self.frame, bg='white', width=1200, height=800)
+        self.canvas.grid(column=0, row=1, columnspan=7, sticky=tk.W, pady=6)
+    
+    def vincular_eventos(self):
+        self.canvas.bind('<ButtonPress-1>', self.iniciar_figura_nova)
+        self.canvas.bind('<B1-Motion>', self.atualizar_figura_nova)
+        self.canvas.bind('<ButtonRelease-1>', self.incluir_figura_nova)
+
+    def iniciar_figura_nova(self, event):
+        forma_selecionada = self.tipo_figura_var.get()
+        cor = self.cor_pincel_var.get()
+        preenchimento = self.cor_preenchimento_var.get()
+
+        classe_da_formas = self.mapeamento_formas[forma_selecionada]
+        self.figura_nova = classe_da_formas(event.x, event.y, cor, preenchimento)
+
+    def atualizar_figura_nova(self, event):
+        if self.figura_nova:
+            self.figura_nova.atualizar_coordenadas(event.x, event.y)
+            
+            self.atualizar_tela()
+    
+    def incluir_figura_nova(self, event):
+        if self.figura_nova and not self.figura_nova.figura_incompleta():
+            self.figuras.append(self.figura_nova)
+        
+        self.figura_nova = None
+        self.atualizar_tela()
+
+    def atualizar_tela(self):
+        self.canvas.delete("all")
+        
+        for figura in self.figuras:
+            figura.desenhar(self.canvas)
+            
+        if self.figura_nova:
+            self.figura_nova.desenhar(self.canvas, tracejado=(4, 2))
+    
+    def apagar_tudo(self):
+        self.canvas.delete("all")
+        self.figuras = []
 
 
-
-#******* MAIN *******#
-
-figuras = []       # Todas as figuras desenhadas
-figura_nova = None # Figura que está sendo desenhada, mas ainda não foi incluída em figuras
-raio = None
-
-root = Tk()
-frame = Frame(root)
-root.title("Python Paint")
-
-# Widgets arranjados com Layout grid dentro de frame
-paddings = {'padx': 5, 'pady': 5} 
-
-#Menu de Formas
-label = ttk.Label(frame,  text='Formas:')
-label.grid(column=0, row=0, sticky=W, **paddings)
-
-tipo_figura_var = StringVar(root) # Guarda o tipo de figura selecionado no Menu de formas
-forma_menu = ttk.OptionMenu(frame, tipo_figura_var,
-                             'Rabisco', 'Rabisco', 'Linha', 'Retângulo', 'Oval', 'Círculo' )
-forma_menu.grid(column=1, row=0, sticky=W, **paddings)
-
-# Menu de cores
-label = ttk.Label(frame,  text='Cores:')
-label.grid(column=2, row=0, sticky=W, **paddings)
-
-cor_pincel_var = StringVar(root) # Guarda a cor atual do pincel, que é usada para desenhar as figuras
-cor_menu = ttk.OptionMenu(frame, cor_pincel_var,
-                             'black', 'black', 'red', 'green', 'blue', 'yellow')
-cor_menu.grid(column=3, row=0, sticky=W, **paddings)
-
-#Menu de Preenchimentos
-label = ttk.Label(frame,  text='Preenchimento:')
-label.grid(column=4, row=0, sticky=W, **paddings)
-
-cor_preenche_var = StringVar(root) # Guarda a cor atual do pincel, que é usada para desenhar as figuras
-
-preenche_menu = ttk.OptionMenu(frame, cor_preenche_var,
-                             None, None, 'black', 'red', 'green', 'blue', 'yellow')
-preenche_menu.grid(column=6, row=0, sticky=W, **paddings)
-
-
-canvas = Canvas(frame, bg='white', width=1200, height=1200)
-canvas.grid(column=0, row=1, columnspan=8, sticky=W, **paddings)
-
-frame.pack()
-
-# Eventos de mouse associados ao canvas - com seus callbacks
-canvas.bind('<ButtonPress-1>', iniciar_figura_nova)
-canvas.bind('<B1-Motion>', atualizar_figura_nova)
-canvas.bind('<ButtonRelease-1>', incluir_figura_nova)
-
-root.mainloop()
+janela = tk.Tk()
+app = PaintTkinter(janela)
+janela.mainloop()
