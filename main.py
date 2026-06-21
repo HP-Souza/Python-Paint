@@ -21,7 +21,6 @@ class Figura:
         return (self.x1, self.y1) == (self.x2, self.y2)
     
 class Linha(Figura):
-
     def desenhar(self, canvas, tracejado=None):
         canvas.create_line(self.x1, self.y1, self.x2, self.y2, fill=self.cor_pincel, dash=tracejado)
 
@@ -41,25 +40,66 @@ class Rabisco(Figura):
         return len(self.pontos) <= 1
 
 class Retangulo(Figura):
-
     def desenhar(self, canvas, tracejado=None):
         canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2,outline=self.cor_pincel,
                           fill=self.cor_preenchimento, dash=tracejado)
 
 class Oval(Figura):
-
     def desenhar(self, canvas, tracejado=None):
         canvas.create_oval(self.x1, self.y1, self.x2, self.y2,outline=self.cor_pincel,
                           fill=self.cor_preenchimento, dash=tracejado)
         
 class Circulo(Figura):
-
     def desenhar(self, canvas, tracejado=None):
         raio = ((self.x1 - self.x2)**2 + (self.y1 - self.y2)**2)**0.5
         canvas.create_oval(self.x1 - raio, self.y1 - raio, self.x1 + raio, self.y1 + raio, 
                            outline=self.cor_pincel, fill=self.cor_preenchimento, dash=tracejado)
         
+class PoligonoLivre(Figura):
+    def __init__(self, x_inicial, y_inicial, cor_pincel, cor_preenchimento):
+        super().__init__(x_inicial, y_inicial, cor_pincel, cor_preenchimento)
+        self.pontos = [(x_inicial, y_inicial)]
 
+    def atualizar_coordenadas(self, x_atual, y_atual):
+        self.pontos.append((x_atual,y_atual))
+
+    def desenhar(self, canvas, tracejado=None):
+        if len(self.pontos) > 1:
+            canvas.create_polygon(self.pontos, outline=self.cor_pincel,
+                                  fill=self.cor_preenchimento, dash=tracejado)
+
+    def figura_incompleta(self):
+        return len(self.pontos) <= 2
+
+class PoligonoReto(Figura):
+    def __init__(self, x_inicial, y_inicial,
+                 cor_pincel, cor_preenchimento):
+        super().__init__(x_inicial,y_inicial,cor_pincel,cor_preenchimento)
+
+        self.pontos = [(x_inicial, y_inicial)]
+        self.fechado = False
+
+    def adicionar_ponto(self, x, y):
+        self.pontos.append((x, y))
+
+    def desenhar(self, canvas, tracejado=None):
+
+        if len(self.pontos) < 2:
+            return
+
+        if self.fechado:
+            canvas.create_polygon(
+                self.pontos, outline=self.cor_pincel,
+                fill=self.cor_preenchimento, dash=tracejado)
+
+        else:
+            canvas.create_line(
+                self.pontos, fill=self.cor_pincel,
+                dash=tracejado)
+
+    def figura_incompleta(self):
+        return len(self.pontos) < 3
+        
         
 class PaintTkinter:
     def __init__(self, janela_raiz):
@@ -69,12 +109,17 @@ class PaintTkinter:
 
         self.figuras = []
         self.figura_nova = None
+        self.poligono_em_construcao = None
+        self.mouse_x = 0
+        self.mouse_y = 0
 
         self.mapeamento_formas = {'Rabisco': Rabisco,
                        'Linha': Linha,
                        'Retângulo': Retangulo,
                        'Oval': Oval,
-                       'Círculo': Circulo
+                       'Círculo': Circulo,
+                       'Poligono Livre': PoligonoLivre,
+                       'Poligono Reto': PoligonoReto
                        }
         
         self.configurar_interface()
@@ -110,9 +155,60 @@ class PaintTkinter:
         self.canvas.grid(column=0, row=1, columnspan=7, sticky=tk.W, pady=6)
     
     def vincular_eventos(self):
-        self.canvas.bind('<ButtonPress-1>', self.iniciar_figura_nova)
+        self.canvas.bind('<ButtonPress-1>', self.clique_esquerdo)
         self.canvas.bind('<B1-Motion>', self.atualizar_figura_nova)
         self.canvas.bind('<ButtonRelease-1>', self.incluir_figura_nova)
+        self.canvas.bind('<Button-3>', self.finalizar_poligono)
+        self.canvas.bind('<Motion>', self.atualizar_mouse)
+
+    def clique_esquerdo(self, event):
+
+        if self.tipo_figura_var.get() == 'Poligono Reto':
+
+            if self.poligono_em_construcao is None:
+
+                self.poligono_em_construcao = PoligonoReto(
+                    event.x,
+                    event.y,
+                    self.cor_pincel_var.get(),
+                    self.cor_preenchimento_var.get()
+                )
+
+            else:
+
+                self.poligono_em_construcao.adicionar_ponto(
+                    event.x,
+                    event.y
+                )
+
+            self.atualizar_tela()
+
+        else:
+            self.iniciar_figura_nova(event)
+
+    def finalizar_poligono(self, event):
+
+        if self.poligono_em_construcao:
+
+            if not self.poligono_em_construcao.figura_incompleta():
+
+                self.poligono_em_construcao.fechado = True
+
+                self.figuras.append(
+                    self.poligono_em_construcao
+                )
+
+            self.poligono_em_construcao = None
+
+            self.atualizar_tela()
+
+    def atualizar_mouse(self, event):
+
+        self.mouse_x = event.x
+        self.mouse_y = event.y
+
+        if self.poligono_em_construcao:
+            self.atualizar_tela()
 
     def iniciar_figura_nova(self, event):
         forma_selecionada = self.tipo_figura_var.get()
@@ -123,12 +219,18 @@ class PaintTkinter:
         self.figura_nova = classe_da_formas(event.x, event.y, cor, preenchimento)
 
     def atualizar_figura_nova(self, event):
+        if self.tipo_figura_var.get() == 'Poligono Reto':
+            return
+
         if self.figura_nova:
             self.figura_nova.atualizar_coordenadas(event.x, event.y)
             
             self.atualizar_tela()
     
     def incluir_figura_nova(self, event):
+        if self.tipo_figura_var.get() == 'Poligono Reto':
+            return
+
         if self.figura_nova and not self.figura_nova.figura_incompleta():
             self.figuras.append(self.figura_nova)
         
@@ -136,13 +238,38 @@ class PaintTkinter:
         self.atualizar_tela()
 
     def atualizar_tela(self):
+
         self.canvas.delete("all")
-        
+
         for figura in self.figuras:
             figura.desenhar(self.canvas)
-            
+
         if self.figura_nova:
-            self.figura_nova.desenhar(self.canvas, tracejado=(4, 2))
+            self.figura_nova.desenhar(
+                self.canvas,
+                tracejado=(4, 2)
+            )
+
+        if self.poligono_em_construcao:
+
+            self.poligono_em_construcao.desenhar(
+                self.canvas,
+                tracejado=(4, 2)
+            )
+
+            if len(self.poligono_em_construcao.pontos) > 0:
+
+                ultimo_x, ultimo_y = \
+                    self.poligono_em_construcao.pontos[-1]
+
+                self.canvas.create_line(
+                    ultimo_x,
+                    ultimo_y,
+                    self.mouse_x,
+                    self.mouse_y,
+                    dash=(4, 2),
+                    fill=self.poligono_em_construcao.cor_pincel
+                )
     
     def apagar_tudo(self):
         self.canvas.delete("all")
