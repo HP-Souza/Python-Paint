@@ -164,22 +164,22 @@ class PaintTkinter:
     def clique_esquerdo(self, event):
 
         if self.tipo_figura_var.get() == 'Poligono Reto':
-
             if self.poligono_em_construcao is None:
-
                 self.poligono_em_construcao = PoligonoReto(
-                    event.x,
-                    event.y,
-                    self.cor_pincel_var.get(),
-                    self.cor_preenchimento_var.get()
+                    event.x, event.y,
+                    self.cor_pincel_var.get(), self.cor_preenchimento_var.get()
                 )
 
+            elif self.poligono_em_construcao and not self.poligono_em_construcao.figura_incompleta() and (
+                event.x <= self.poligono_em_construcao.pontos[0][0]+25 and event.x >= self.poligono_em_construcao.pontos[0][0]-25) and (
+                event.y <= self.poligono_em_construcao.pontos[0][1]+25 and event.y >= self.poligono_em_construcao.pontos[0][1]-25):
+                
+                self.poligono_em_construcao.fechado = True
+                self.figuras.append(self.poligono_em_construcao)
+                self.poligono_em_construcao = None
+                
             else:
-
-                self.poligono_em_construcao.adicionar_ponto(
-                    event.x,
-                    event.y
-                )
+                self.poligono_em_construcao.adicionar_ponto(event.x,event.y)
 
             self.atualizar_tela()
 
@@ -187,23 +187,16 @@ class PaintTkinter:
             self.iniciar_figura_nova(event)
 
     def finalizar_poligono(self, event):
-
         if self.poligono_em_construcao:
 
             if not self.poligono_em_construcao.figura_incompleta():
-
                 self.poligono_em_construcao.fechado = True
-
-                self.figuras.append(
-                    self.poligono_em_construcao
-                )
+                self.figuras.append(self.poligono_em_construcao)
 
             self.poligono_em_construcao = None
-
             self.atualizar_tela()
 
     def atualizar_mouse(self, event):
-
         self.mouse_x = event.x
         self.mouse_y = event.y
 
@@ -214,7 +207,6 @@ class PaintTkinter:
         forma_selecionada = self.tipo_figura_var.get()
         cor = self.cor_pincel_var.get()
         preenchimento = self.cor_preenchimento_var.get()
-
         classe_da_formas = self.mapeamento_formas[forma_selecionada]
         self.figura_nova = classe_da_formas(event.x, event.y, cor, preenchimento)
 
@@ -222,7 +214,7 @@ class PaintTkinter:
         if self.tipo_figura_var.get() == 'Poligono Reto':
             return
 
-        if self.figura_nova:
+        elif self.figura_nova:
             self.figura_nova.atualizar_coordenadas(event.x, event.y)
             
             self.atualizar_tela()
@@ -231,14 +223,13 @@ class PaintTkinter:
         if self.tipo_figura_var.get() == 'Poligono Reto':
             return
 
-        if self.figura_nova and not self.figura_nova.figura_incompleta():
+        elif self.figura_nova and not self.figura_nova.figura_incompleta():
             self.figuras.append(self.figura_nova)
         
         self.figura_nova = None
         self.atualizar_tela()
 
     def atualizar_tela(self):
-
         self.canvas.delete("all")
 
         for figura in self.figuras:
@@ -247,14 +238,14 @@ class PaintTkinter:
         if self.figura_nova:
             self.figura_nova.desenhar(
                 self.canvas,
-                tracejado=(4, 2)
+                tracejado = (4, 2)
             )
 
         if self.poligono_em_construcao:
 
             self.poligono_em_construcao.desenhar(
                 self.canvas,
-                tracejado=(4, 2)
+                tracejado = (4, 2)
             )
 
             if len(self.poligono_em_construcao.pontos) > 0:
@@ -267,8 +258,8 @@ class PaintTkinter:
                     ultimo_y,
                     self.mouse_x,
                     self.mouse_y,
-                    dash=(4, 2),
-                    fill=self.poligono_em_construcao.cor_pincel
+                    dash = (4, 2),
+                    fill = self.poligono_em_construcao.cor_pincel
                 )
     
     def apagar_tudo(self):
