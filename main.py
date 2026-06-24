@@ -1,5 +1,5 @@
-from backend.paint import *
+from Views.CanvasView import *
     
 janela = tk.Tk()
-app = PaintTkinter(janela)
+app = CanvasView(janela)
 janela.mainloop()
