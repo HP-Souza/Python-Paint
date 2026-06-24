@@ -1,8 +1,7 @@
 from Models.Figura import Figura
 
 class PoligonoReto(Figura):
-    def __init__(self, x_inicial, y_inicial,
-                 cor_pincel, cor_preenchimento):
+    def __init__(self, x_inicial, y_inicial,cor_pincel, cor_preenchimento):
         super().__init__(x_inicial,y_inicial,cor_pincel,cor_preenchimento)
 
         self.pontos = [(x_inicial, y_inicial)]

@@ -1,4 +1,4 @@
-from Models import PoligonoReto
+from Models.PoligonoReto import PoligonoReto
 
 
 class CanvasController:
@@ -53,10 +53,11 @@ class CanvasController:
                     self.view.cor_pincel_var.get(),
                     self.view.cor_preenchimento_var.get()
                 )
+            
 
-            elif (self.view.poligono_em_construcao and not self.view.poligono_em_construcao.figura_incompleta()
-                and (self.view.poligono_em_construcao.pontos[0][0] - 25<= event.x<= self.view.poligono_em_construcao.pontos[0][0] + 25)
-                and (self.view.poligono_em_construcao.pontos[0][1] - 25<= event.y<= self.view.poligono_em_construcao.pontos[0][1] + 25)):
+            elif (self.view.poligono_em_construcao and len(self.view.poligono_em_construcao.pontos) > 2
+                and (self.view.poligono_em_construcao.pontos[0][0] - 25 <= event.x <= self.view.poligono_em_construcao.pontos[0][0] + 25)
+                and (self.view.poligono_em_construcao.pontos[0][1] - 25 <= event.y <= self.view.poligono_em_construcao.pontos[0][1] + 25)):
 
                 self.view.poligono_em_construcao.fechado = True
                 self.view.figuras.append(self.view.poligono_em_construcao)
