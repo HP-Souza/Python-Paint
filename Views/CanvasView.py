@@ -17,13 +17,6 @@ class CanvasView:
         self.janela = janela_raiz
         self.janela.title("Python Paint")
 
-        self.figuras = []
-        self.figura_nova = None
-        self.poligono_em_construcao = None
-
-        self.mouse_x = 0
-        self.mouse_y = 0
-
         self.mapeamento_formas = {
             'Rabisco': Rabisco,
             'Linha': Linha,
@@ -36,7 +29,7 @@ class CanvasView:
 
         self.configurar_interface()
         self.controller = CanvasController(self)
-        self.vincular_eventos()
+        self.controller.vincular_eventos()
 
     def configurar_interface(self):
 
@@ -65,11 +58,4 @@ class CanvasView:
         self.canvas = tk.Canvas(self.frame,bg='white',width=2400,height=1600)
         self.canvas.grid(column=0,row=1,columnspan=20)
 
-    def vincular_eventos(self):
-
-        self.canvas.bind('<ButtonPress-1>',self.controller.clique_esquerdo)
-        self.canvas.bind('<B1-Motion>',self.controller.atualizar_figura_nova)
-        self.canvas.bind('<ButtonRelease-1>',self.controller.incluir_figura_nova)
-        self.canvas.bind('<Button-3>',self.controller.finalizar_poligono)
-        self.canvas.bind('<Motion>',self.controller.atualizar_mouse)
-        self.botao_limpar.config(command=self.controller.apagar_tudo)
+    
