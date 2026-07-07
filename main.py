@@ -1,5 +1,12 @@
-from Views.CanvasView import *
-    
+import tkinter as tk
+from Views.CanvasView import CanvasView
+from Models.Desenhos import Desenhos
+from Controllers.CanvasController import CanvasController
+
+
 janela = tk.Tk()
-app = CanvasView(janela)
+model = Desenhos()
+view = CanvasView(janela, model)
+controller = CanvasController(model, view)
+view.set_controller(controller)
 janela.mainloop()
