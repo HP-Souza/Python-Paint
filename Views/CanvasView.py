@@ -12,10 +12,12 @@ from Controllers.CanvasController import CanvasController
 
 class CanvasView:
 
-    def __init__(self, janela_raiz):
+    def __init__(self, janela_raiz, model):
 
         self.janela = janela_raiz
+        self.model = model
         self.janela.title("Python Paint")
+        self.controller = None
 
         self.mapeamento_formas = {
             'Rabisco': Rabisco,
@@ -28,7 +30,9 @@ class CanvasView:
         }
 
         self.configurar_interface()
-        self.controller = CanvasController(self)
+
+    def set_controller(self, controller):
+        self.controller = controller
         self.controller.vincular_eventos()
 
     def configurar_interface(self):
@@ -42,15 +46,15 @@ class CanvasView:
 
         ttk.Label(self.frame,text='Formas:').grid(column=0, row=0)
         ttk.OptionMenu(self.frame,self.tipo_figura_var,
-                       'Rabisco',*self.mapeamento_formas.keys()).grid(column=1, row=0)
+                    'Rabisco',*self.mapeamento_formas.keys()).grid(column=1, row=0)
 
         ttk.Label(self.frame,text='Cores:').grid(column=2, row=0)
         ttk.OptionMenu(self.frame,self.cor_pincel_var,
-                       'black','black','red','green','blue','yellow').grid(column=3, row=0)
+                    'black','black','red','green','blue','yellow').grid(column=3, row=0)
 
         ttk.Label(self.frame,text='Preenchimento:').grid(column=4, row=0)
         ttk.OptionMenu(self.frame,self.cor_preenchimento_var,
-                       '','','black','red','green','blue','yellow').grid(column=5, row=0)
+                    '','','black','red','green','blue','yellow').grid(column=5, row=0)
 
         self.botao_limpar = ttk.Button(self.frame,text='Limpar tela')
         self.botao_limpar.grid(column=6,row=0)
@@ -58,4 +62,33 @@ class CanvasView:
         self.canvas = tk.Canvas(self.frame,bg='white',width=2400,height=1600)
         self.canvas.grid(column=0,row=1,columnspan=20)
 
-    
+    def atualizar(self):
+        self.canvas.delete("all")
+
+        for figura in self.model.figuras:
+            figura.desenhar(self.canvas)
+
+        if self.model.figura_nova:
+            self.model.figura_nova.desenhar(
+                self.canvas,
+                tracejado=(4, 2)
+            )
+
+        if self.model.poligono_em_construcao:
+            self.model.poligono_em_construcao.desenhar(
+                self.canvas,
+                tracejado=(4, 2)
+            )
+
+            if len(self.model.poligono_em_construcao.pontos) > 0:
+                ultimo_x, ultimo_y = self.model.poligono_em_construcao.pontos[-1]
+
+                self.canvas.create_line(
+                    ultimo_x,
+                    ultimo_y,
+                    self.controller.mouse_x,
+                    self.controller.mouse_y,
+                    dash=(4, 2),
+                    fill=self.model.poligono_em_construcao.cor_pincel
+                )
+        
