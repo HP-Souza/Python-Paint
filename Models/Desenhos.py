@@ -38,13 +38,7 @@ class Desenhos:
         return dados
 
     def carregar_de_dados(self, dados):
-        from Models.Rabisco import Rabisco
-        from Models.Linha import Linha
-        from Models.Retangulo import Retangulo
-        from Models.Oval import Oval
-        from Models.Circulo import Circulo
-        from Models.PoligonoLivre import PoligonoLivre
-        from Models.PoligonoReto import PoligonoReto
+        from Models.Agrupamento_de_Figuras import Rabisco, Linha, Retangulo, Oval, Circulo, PoligonoLivre, PoligonoReto
 
         mapeamento = {
             'Rabisco': Rabisco,

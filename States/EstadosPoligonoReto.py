@@ -1,5 +1,5 @@
 from States.Ferramentas import Ferramentas
-from Models.PoligonoReto import PoligonoReto
+from Models.Agrupamento_de_Figuras import PoligonoReto
 from Models.Desenhos import Desenhos
 
 
