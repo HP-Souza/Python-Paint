@@ -1,12 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from Models.Rabisco import Rabisco
-from Models.Linha import Linha
-from Models.Retangulo import Retangulo
-from Models.Oval import Oval
-from Models.Circulo import Circulo
-from Models.PoligonoLivre import PoligonoLivre
-from Models.PoligonoReto import PoligonoReto
+from Models.FigurasAgrupadas import Linha, Rabisco, Retangulo, Oval, Circulo, PoligonoLivre, PoligonoReto
 from Controllers.CanvasController import CanvasController
 
 
