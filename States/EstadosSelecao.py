@@ -58,7 +58,7 @@ class EstadoSelecao(Ferramentas):
         def colar(self, event=None):
             if self.area_transferencia:
                 nova = copy.deepcopy(self.area_transferencia)
-                nova.mover(self.mouse_x, self.mouse_y)
+                nova.mover(20,20)
                 self.controller.model.figuras.append(nova)
                 self.controller.model.figura_selecionada = nova
 

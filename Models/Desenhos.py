@@ -44,7 +44,7 @@ class Desenhos:
         return dados
 
     def carregar_de_dados(self, dados):
-        from Models.Agrupamento_de_Figuras import Rabisco, Linha, Retangulo, Oval, Circulo, PoligonoLivre, PoligonoReto
+        from Models.Agrupamento_de_Figuras import Rabisco, Linha, Retangulo, Oval, Circulo, PoligonoReto
 
         mapeamento = {
             'Rabisco': Rabisco,
@@ -52,8 +52,8 @@ class Desenhos:
             'Retangulo': Retangulo,
             'Oval': Oval,
             'Circulo': Circulo,
-            'PoligonoLivre': PoligonoLivre,
-            'PoligonoReto': PoligonoReto
+            'PoligonoReto': PoligonoReto,
+            'Seleção': 'Seleção'
         }
 
         for item in dados:
