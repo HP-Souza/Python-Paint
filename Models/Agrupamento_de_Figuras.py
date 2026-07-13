@@ -56,23 +56,6 @@ class Oval(Figura):
         resultado = ((x_clique - h)**2 / a**2) + ((y_clique - k)**2 / b**2)
         
         return resultado <= 1
-        
-
-class PoligonoLivre(Figura):
-    def __init__(self, x_inicial, y_inicial, cor_pincel, cor_preenchimento):
-        super().__init__(x_inicial, y_inicial, cor_pincel, cor_preenchimento)
-        self.pontos = [(x_inicial, y_inicial)]
-
-    def atualizar_coordenadas(self, x_atual, y_atual):
-        self.pontos.append((x_atual,y_atual))
-
-    def desenhar(self, canvas, tracejado=None):
-        if len(self.pontos) > 1:
-            canvas.create_polygon(self.pontos, outline=self.cor_pincel,
-                                  fill=self.cor_preenchimento, dash=tracejado)
-
-    def figura_incompleta(self):
-        return len(self.pontos) <= 2
     
 
 class PoligonoReto(Figura):
@@ -103,6 +86,35 @@ class PoligonoReto(Figura):
     def figura_incompleta(self):
         return len(self.pontos) < 3
     
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.y1 += dy
+        self.x2 += dx
+        self.y2 += dy
+
+        self.pontos = [
+            (x + dx, y + dy)
+            for x, y in self.pontos
+        ]
+        
+    def contem_ponto(self, x_clique, y_clique):
+        dentro = False
+
+        n = len(self.pontos)
+
+        for i in range(n):
+            x1, y1 = self.pontos[i]
+            x2, y2 = self.pontos[(i + 1) % n]
+
+            if ((y1 > y_clique) != (y2 > y_clique)):
+
+                x_intersecao = x1 + (y_clique - y1) * (x2 - x1) / (y2 - y1)
+
+                if x_clique < x_intersecao:
+                    dentro = not dentro
+
+        return dentro
+        
 
 class Rabisco(Figura):
     def __init__(self, x_inicial, y_inicial, cor_pincel, cor_preenchimento):
@@ -130,6 +142,16 @@ class Rabisco(Figura):
                 return True
         return False    
     
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.y1 += dy
+        self.x2 += dx
+        self.y2 += dy
+
+        self.pontos = [
+            (x + dx, y + dy)
+            for x, y in self.pontos
+        ]
     
     
 

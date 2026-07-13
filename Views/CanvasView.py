@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from Models.Agrupamento_de_Figuras import Rabisco, Linha, Retangulo, Oval, Circulo, PoligonoLivre, PoligonoReto
+from Models.Agrupamento_de_Figuras import Rabisco, Linha, Retangulo, Oval, Circulo, PoligonoReto
 from Controllers.CanvasController import CanvasController
 
 
@@ -19,8 +19,8 @@ class CanvasView:
             'Retângulo': Retangulo,
             'Oval': Oval,
             'Círculo': Circulo,
-            'Poligono Livre': PoligonoLivre,
-            'Poligono Reto': PoligonoReto
+            'Poligono Reto': PoligonoReto,
+            'Seleção': 'Seleção'
         }
 
         self.configurar_interface()
@@ -62,6 +62,11 @@ class CanvasView:
         for figura in self.model.figuras:
             figura.desenhar(self.canvas)
 
+            if figura == self.model.figura_selecionada:
+                figura.desenhar(self.canvas, tracejado=(5,2))
+            else:
+                figura.desenhar(self.canvas) 
+
         if self.model.figura_nova:
             self.model.figura_nova.desenhar(
                 self.canvas,
@@ -85,4 +90,3 @@ class CanvasView:
                     dash=(4, 2),
                     fill=self.model.poligono_em_construcao.cor_pincel
                 )
-        

@@ -8,11 +8,22 @@ class Desenhos:
         self.figuras = []
         self.figura_nova = None
         self.poligono_em_construcao = None
+        self.figura_selecionada = None
         self.caminho_arquivo = "desenhos.json"
 
     def adicionar_figura(self, figura):
         self.figuras.append(figura)
 
+    def remover_figura(self):
+        if self.figura_selecionada is not None:
+            self.figuras.remove(self.figura_selecionada)
+            self.figura_selecionada = None
+
+    def mudar_cor_figura(self):
+        if self.figura_selecionada is not None:
+            self.figura_selecionada.cor_pincel = self.controller.view.cor_pincel_var.get()
+            self.figura_selecionada.cor_preenchimento = self.controller.view.cor_preenchimento_var.get()
+    
     def limpar(self):
         self.figuras.clear()
         self.figura_nova = None

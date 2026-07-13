@@ -19,3 +19,9 @@ class Figura:
     
     def contem_ponto(self, x_clique, y_clique):
         pass
+
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.y1 += dy
+        self.x2 += dx
+        self.y2 += dy
