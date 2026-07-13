@@ -17,3 +17,11 @@ class Figura:
     def figura_incompleta(self):
         return (self.x1, self.y1) == (self.x2, self.y2)
     
+    def contem_ponto(self, x_clique, y_clique):
+        pass
+
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.y1 += dy
+        self.x2 += dx
+        self.y2 += dy

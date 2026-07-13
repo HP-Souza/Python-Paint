@@ -8,11 +8,17 @@ class Desenhos:
         self.figuras = []
         self.figura_nova = None
         self.poligono_em_construcao = None
+        self.figura_selecionada = None
         self.caminho_arquivo = "desenhos.json"
 
     def adicionar_figura(self, figura):
         self.figuras.append(figura)
 
+    def remover_figura(self):
+        if self.figura_selecionada is not None:
+            self.figuras.remove(self.figura_selecionada)
+            self.figura_selecionada = None
+    
     def limpar(self):
         self.figuras.clear()
         self.figura_nova = None
@@ -38,13 +44,7 @@ class Desenhos:
         return dados
 
     def carregar_de_dados(self, dados):
-        from Models.Rabisco import Rabisco
-        from Models.Linha import Linha
-        from Models.Retangulo import Retangulo
-        from Models.Oval import Oval
-        from Models.Circulo import Circulo
-        from Models.PoligonoLivre import PoligonoLivre
-        from Models.PoligonoReto import PoligonoReto
+        from Models.Agrupamento_de_Figuras import Rabisco, Linha, Retangulo, Oval, Circulo, PoligonoLivre, PoligonoReto
 
         mapeamento = {
             'Rabisco': Rabisco,

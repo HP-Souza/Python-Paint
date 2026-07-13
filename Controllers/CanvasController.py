@@ -1,6 +1,8 @@
 from Models.Desenhos import Desenhos
 from States.EstadosDesenho2Pontos import EstadoDesenho2Pontos
 from States.EstadosPoligonoReto import EstadoPoligonoReto
+from States.EstadosSelecao import EstadoSelecao
+
 
 
 class CanvasController:
@@ -11,13 +13,18 @@ class CanvasController:
 
         self.mouse_x = 0
         self.mouse_y = 0
+        self.area_transferencia = None
 
         self.estado = EstadoDesenho2Pontos(self)
         self.view.tipo_figura_var.trace_add('write', self.alternar_estado)
+        self.view.cor_pincel_var.trace_add("write", self.mudar_cor)
+        self.view.cor_preenchimento_var.trace_add("write", self.mudar_cor)
 
     def alternar_estado(self, *args):
         if self.view.tipo_figura_var.get() == 'Poligono Reto':
             self.estado = EstadoPoligonoReto(self)
+        elif self.view.tipo_figura_var.get() == 'Seleção':
+            self.estado = EstadoSelecao(self)
         else:
             self.estado = EstadoDesenho2Pontos(self)
 
@@ -28,6 +35,11 @@ class CanvasController:
         self.view.canvas.bind('<ButtonRelease-1>',self.incluir_figura_nova)
         self.view.canvas.bind('<Button-3>',self.finalizar_poligono)
         self.view.canvas.bind('<Motion>',self.atualizar_mouse)
+        self.view.janela.bind("<Delete>", self.deletar_figura)
+        self.view.janela.bind("<Control-c>", self.copiar)
+        self.view.janela.bind("<Control-v>", self.colar)
+        self.view.janela.bind("<Up>", self.mover_frente)
+        self.view.janela.bind("<Down>", self.mover_tras)
         self.view.botao_limpar.config(command=self.apagar_tudo)
 
     def finalizar_poligono(self, event=None):
@@ -57,4 +69,32 @@ class CanvasController:
 
     def incluir_figura_nova(self, event):
         self.estado.incluir_figura_nova(event)
+        self.view.atualizar()
+    
+    def selecionar_figura(self, event):
+        self.estado.clique_esquerdo(event)
+        self.view.atualizar()
+
+    def deletar_figura(self, event=None):
+        self.model.remover_figura()
+        self.view.atualizar()
+
+    def copiar(self, event=None):
+        self.estado.copiar(event)
+        self.view.atualizar()
+
+    def colar(self, event=None):
+        self.estado.colar(event)
+        self.view.atualizar()
+
+    def mover_frente(self, event=None):
+        self.estado.mover_frente()
+        self.view.atualizar()
+
+    def mover_tras(self, event=None):
+        self.estado.mover_tras()
+        self.view.atualizar()
+
+    def mudar_cor(self, *args, event=None):
+        self.estado.mudar_cor(event)
         self.view.atualizar()
