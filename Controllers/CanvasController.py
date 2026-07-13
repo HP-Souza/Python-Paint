@@ -38,8 +38,10 @@ class CanvasController:
         self.view.janela.bind("<Delete>", self.deletar_figura)
         self.view.janela.bind("<Control-c>", self.copiar)
         self.view.janela.bind("<Control-v>", self.colar)
-        self.view.janela.bind("<Up>", self.mover_frente)
-        self.view.janela.bind("<Down>", self.mover_tras)
+        self.view.janela.bind("<Up>", self.mover_frente_1)
+        self.view.janela.bind("<Down>", self.mover_tras_1)
+        self.view.janela.bind("<Right>", self.mover_frente_todos)
+        self.view.janela.bind("<Left>", self.mover_tras_todos)
         self.view.botao_limpar.config(command=self.apagar_tudo)
 
     def finalizar_poligono(self, event=None):
@@ -87,12 +89,20 @@ class CanvasController:
         self.estado.colar(event)
         self.view.atualizar()
 
-    def mover_frente(self, event=None):
-        self.estado.mover_frente()
+    def mover_frente_1(self, event=None):
+        self.estado.mover_frente_1()
         self.view.atualizar()
 
-    def mover_tras(self, event=None):
-        self.estado.mover_tras()
+    def mover_tras_1(self, event=None):
+        self.estado.mover_tras_1()
+        self.view.atualizar()
+
+    def mover_frente_todos(self, event=None):
+        self.estado.mover_frente_todos()
+        self.view.atualizar()
+
+    def mover_tras_todos(self, event=None):
+        self.estado.mover_tras_todos()
         self.view.atualizar()
 
     def mudar_cor(self, *args, event=None):

@@ -26,10 +26,16 @@ class Ferramentas:
     def colar(self, event=None):
         pass
 
-    def mover_frente(self, event):
+    def mover_frente_1(self, event):
         pass
 
-    def mover_tras(self, event):
+    def mover_tras_1(self, event):
+        pass
+
+    def mover_frente_todos(self, event):
+        pass
+
+    def mover_tras_todos(self, event):
         pass
 
     def mudar_cor(self, event):

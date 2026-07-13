@@ -58,11 +58,11 @@ class EstadoSelecao(Ferramentas):
         def colar(self, event=None):
             if self.area_transferencia:
                 nova = copy.deepcopy(self.area_transferencia)
-                nova.mover(self.mouse_x, self.mouse_y)
+                nova.mover(20,20)
                 self.controller.model.figuras.append(nova)
                 self.controller.model.figura_selecionada = nova
 
-        def mover_frente(self):
+        def mover_frente_1(self):
             figura = self.controller.model.figura_selecionada
 
             if figura is None:
@@ -75,7 +75,7 @@ class EstadoSelecao(Ferramentas):
                     self.controller.model.figuras[i + 1], self.controller.model.figuras[i]
 
                 
-        def mover_tras(self):
+        def mover_tras_1(self):
 
             figura = self.controller.model.figura_selecionada
 
@@ -87,6 +87,32 @@ class EstadoSelecao(Ferramentas):
             if indice > 0:
                 self.controller.model.figuras[indice], self.controller.model.figuras[indice-1] = \
                     self.controller.model.figuras[indice-1], self.controller.model.figuras[indice]
+        
+        def mover_frente_todos(self):
+            figura = self.controller.model.figura_selecionada
+
+            if figura is None:
+                return
+
+            i = self.controller.model.figuras.index(figura)
+
+            figuras = self.controller.model.figuras
+    
+            figuras.remove(figura)
+            figuras.append(figura)
+
+                
+        def mover_tras_todos(self):
+
+            figura = self.controller.model.figura_selecionada
+
+            if figura is None:
+                return
+
+            figuras = self.controller.model.figuras
+
+            figuras.remove(figura)
+            figuras.insert(0, figura)
                 
         def mudar_cor(self, event=None):
 
