@@ -2,7 +2,6 @@ from Models.Desenhos import Desenhos
 from States.EstadosDesenho2Pontos import EstadoDesenho2Pontos
 from States.EstadosPoligonoReto import EstadoPoligonoReto
 from States.EstadosSelecao import EstadoSelecao
-import copy
 
 
 
@@ -18,6 +17,8 @@ class CanvasController:
 
         self.estado = EstadoDesenho2Pontos(self)
         self.view.tipo_figura_var.trace_add('write', self.alternar_estado)
+        self.view.cor_pincel_var.trace_add("write", self.mudar_cor)
+        self.view.cor_preenchimento_var.trace_add("write", self.mudar_cor)
 
     def alternar_estado(self, *args):
         if self.view.tipo_figura_var.get() == 'Poligono Reto':
@@ -37,6 +38,8 @@ class CanvasController:
         self.view.janela.bind("<Delete>", self.deletar_figura)
         self.view.janela.bind("<Control-c>", self.copiar)
         self.view.janela.bind("<Control-v>", self.colar)
+        self.view.janela.bind("<Up>", self.mover_frente)
+        self.view.janela.bind("<Down>", self.mover_tras)
         self.view.botao_limpar.config(command=self.apagar_tudo)
 
     def finalizar_poligono(self, event=None):
@@ -76,20 +79,22 @@ class CanvasController:
         self.model.remover_figura()
         self.view.atualizar()
 
-    def mudar_cor_figura(self):
-        self.model.mudar_cor_figura()
+    def copiar(self, event=None):
+        self.estado.copiar(event)
         self.view.atualizar()
 
-    def copiar(self, event=None):
-        if self.model.figura_selecionada:
-            self.area_transferencia = copy.deepcopy(
-                self.model.figura_selecionada
-            )
-
     def colar(self, event=None):
-        if self.area_transferencia:
-            nova = copy.deepcopy(self.area_transferencia)
-            nova.mover(self.mouse_x, self.mouse_y)
-            self.model.figuras.append(nova)
-            self.model.figura_selecionada = nova
-            self.view.atualizar()
+        self.estado.colar(event)
+        self.view.atualizar()
+
+    def mover_frente(self, event=None):
+        self.estado.mover_frente()
+        self.view.atualizar()
+
+    def mover_tras(self, event=None):
+        self.estado.mover_tras()
+        self.view.atualizar()
+
+    def mudar_cor(self, *args, event=None):
+        self.estado.mudar_cor(event)
+        self.view.atualizar()

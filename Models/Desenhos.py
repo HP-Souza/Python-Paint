@@ -18,11 +18,6 @@ class Desenhos:
         if self.figura_selecionada is not None:
             self.figuras.remove(self.figura_selecionada)
             self.figura_selecionada = None
-
-    def mudar_cor_figura(self):
-        if self.figura_selecionada is not None:
-            self.figura_selecionada.cor_pincel = self.controller.view.cor_pincel_var.get()
-            self.figura_selecionada.cor_preenchimento = self.controller.view.cor_preenchimento_var.get()
     
     def limpar(self):
         self.figuras.clear()

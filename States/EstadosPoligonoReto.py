@@ -48,3 +48,15 @@ class EstadoPoligonoReto(Ferramentas):
 
     def iniciar_figura_nova(self, event):
         pass
+
+    def copiar(self, event=None):
+        pass
+
+    def colar(self, event=None):
+        pass
+
+    def mover_frente(self, event):
+        pass
+
+    def mover_tras(self, event):
+        pass
