@@ -8,6 +8,7 @@ class Desenhos:
         self.figuras = []
         self.figura_nova = None
         self.poligono_em_construcao = None
+        self.poligono_regular_em_construcao = None
         self.figura_selecionada = None
         self.figuras_selecionadas = []
         self.caminho_arquivo = "desenhos.json"
@@ -48,6 +49,7 @@ class Desenhos:
         self.figuras.clear()
         self.figura_nova = None
         self.poligono_em_construcao = None
+        self.poligono_regular_em_construcao = None
         self.limpar_selecao()
 
     def para_dados(self):

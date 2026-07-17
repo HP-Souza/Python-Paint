@@ -9,21 +9,12 @@ class EstadoDesenho2Pontos(Ferramentas):
         preenchimento = self.controller.view.cor_preenchimento_var.get()
         classe = self.controller.view.mapeamento_formas[forma]
 
-        if forma == 'Poligono Regular':
-            self.controller.model.figura_nova = classe(
-                event.x,
-                event.y,
-                cor,
-                preenchimento,
-                lados=5
-            )
-        else:
-            self.controller.model.figura_nova = classe(
-                event.x,
-                event.y,
-                cor,
-                preenchimento
-            )
+        self.controller.model.figura_nova = classe(
+            event.x,
+            event.y,
+            cor,
+            preenchimento
+        )
 
     def atualizar_figura_nova(self, event):
         if self.controller.model.figura_nova:

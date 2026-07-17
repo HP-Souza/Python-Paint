@@ -25,7 +25,6 @@ class EstadoSelecao(Ferramentas):
             if event.state & 0x0004:
                 self.controller.model.adicionar_a_selecao(figura_encontrada)
             elif figura_encontrada in self.controller.model.figuras_selecionadas:
-                # keep the current multi-selection when clicking a selected figure
                 pass
             else:
                 self.controller.model.definir_selecao([figura_encontrada])
