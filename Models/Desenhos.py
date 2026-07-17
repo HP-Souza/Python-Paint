@@ -54,6 +54,7 @@ class Desenhos:
             'Circulo': Circulo,
             'PoligonoReto': PoligonoReto,
             'Seleção': 'Seleção'
+
         }
 
         for item in dados:
