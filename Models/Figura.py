@@ -11,7 +11,7 @@ class Figura:
         self.x2 = x_atual
         self.y2 = y_atual
 
-    def desenho(self, canvas, tracejado=None):
+    def desenhar(self, canvas, tracejado=None):
         pass
 
     def figura_incompleta(self):
@@ -25,3 +25,35 @@ class Figura:
         self.y1 += dy
         self.x2 += dx
         self.y2 += dy
+
+    def obter_limites(self):
+        return (
+            min(self.x1, self.x2),
+            min(self.y1, self.y2),
+            max(self.x1, self.x2),
+            max(self.y1, self.y2)
+        )
+
+    def para_dados(self):
+        dados = {
+            'tipo': self.__class__.__name__,
+            'x1': self.x1,
+            'y1': self.y1,
+            'x2': self.x2,
+            'y2': self.y2,
+            'cor_pincel': self.cor_pincel,
+            'cor_preenchimento': self.cor_preenchimento
+        }
+        return dados
+
+    @classmethod
+    def from_dados(cls, item):
+        obj = cls(
+            item['x1'],
+            item['y1'],
+            item.get('cor_pincel', ''),
+            item.get('cor_preenchimento', '')
+        )
+        obj.x2 = item.get('x2', item['x1'])
+        obj.y2 = item.get('y2', item['y1'])
+        return obj
