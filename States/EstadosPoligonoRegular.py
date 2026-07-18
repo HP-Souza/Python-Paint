@@ -4,28 +4,22 @@ from Models.Agrupamento_de_Figuras import PoligonoRegular
 
 class EstadoPoligonoRegular(Ferramentas):
 
-    RAIO_PADRAO = 70
     LADOS_INICIAIS = 3
 
     def clique_esquerdo(self, event):
         poligono = self.controller.model.poligono_regular_em_construcao
 
         if poligono is None:
-            poligono = PoligonoRegular(
+            poligono = PoligonoRegular( 
                 event.x,
                 event.y,
                 self.controller.view.cor_pincel_var.get(),
                 self.controller.view.cor_preenchimento_var.get(),
                 lados=self.LADOS_INICIAIS
             )
-            # Define um segundo ponto (acima do centro) só para estabelecer
-            # o raio inicial; a orientação do polígono já é sempre "para
-            # cima" dentro de PoligonoRegular._calcular_pontos().
-            poligono.atualizar_coordenadas(event.x, event.y - self.RAIO_PADRAO)
             self.controller.model.poligono_regular_em_construcao = poligono
         else:
             poligono.lados += 1
-            poligono.atualizar_coordenadas(poligono.x2, poligono.y2)
 
     def finalizar_poligono(self, event=None):
         poligono = self.controller.model.poligono_regular_em_construcao
@@ -42,7 +36,9 @@ class EstadoPoligonoRegular(Ferramentas):
         pass
 
     def atualizar_mouse(self, event):
-        pass
+        poligono = self.controller.model.poligono_regular_em_construcao
+        if poligono:
+            poligono.atualizar_coordenadas(event.x, event.y)
 
     def iniciar_figura_nova(self, event):
         pass

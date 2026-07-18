@@ -130,19 +130,9 @@ class CanvasView:
                 )
 
         if self.model.poligono_regular_em_construcao:
-            poligono_regular = self.model.poligono_regular_em_construcao
-            poligono_regular.desenhar(
+            self.model.poligono_regular_em_construcao.desenhar(
                 self.canvas,
                 tracejado=(4, 2)
-            )
-
-            x_min, y_min, x_max, y_max = poligono_regular.obter_limites()
-            self.canvas.create_text(
-                (x_min + x_max) / 2,
-                y_min - 15,
-                text=f"Lados: {poligono_regular.lados}",
-                fill='blue',
-                font=('Arial', 10, 'bold')
             )
 
         if hasattr(self.controller, 'estado') and getattr(self.controller.estado, 'selecao_rect', None):

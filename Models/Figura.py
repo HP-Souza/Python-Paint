@@ -7,6 +7,9 @@ class Figura:
         self.cor_pincel = cor_pincel
         self.cor_preenchimento = cor_preenchimento
 
+    def _largura_linha(self, tracejado):
+        return 3 if tracejado else 1
+
     def atualizar_coordenadas(self, x_atual, y_atual):
         self.x2 = x_atual
         self.y2 = y_atual
