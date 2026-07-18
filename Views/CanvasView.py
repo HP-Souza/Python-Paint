@@ -129,6 +129,12 @@ class CanvasView:
                     fill=self.model.poligono_em_construcao.cor_pincel
                 )
 
+        if self.model.poligono_regular_em_construcao:
+            self.model.poligono_regular_em_construcao.desenhar(
+                self.canvas,
+                tracejado=(4, 2)
+            )
+
         if hasattr(self.controller, 'estado') and getattr(self.controller.estado, 'selecao_rect', None):
             x1, y1, x2, y2 = self.controller.estado.selecao_rect
             self.canvas.create_rectangle(

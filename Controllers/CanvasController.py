@@ -4,6 +4,7 @@ from tkinter import filedialog
 from Models.Desenhos import Desenhos
 from States.EstadosDesenho2Pontos import EstadoDesenho2Pontos
 from States.EstadosPoligonoReto import EstadoPoligonoReto
+from States.EstadosPoligonoRegular import EstadoPoligonoRegular
 from States.EstadosSelecao import EstadoSelecao
 
 
@@ -25,6 +26,8 @@ class CanvasController:
     def alternar_estado(self, *args):
         if self.view.tipo_figura_var.get() == 'Poligono Reto':
             self.estado = EstadoPoligonoReto(self)
+        elif self.view.tipo_figura_var.get() == 'Poligono Regular':
+            self.estado = EstadoPoligonoRegular(self)
         elif self.view.tipo_figura_var.get() == 'Seleção':
             self.estado = EstadoSelecao(self)
         else:

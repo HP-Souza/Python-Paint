@@ -47,10 +47,11 @@ class Circulo(Figura):
         
     def contem_ponto(self, x_clique, y_clique):
         raio = ((self.x1 - self.x2)**2 + (self.y1 - self.y2)**2)**0.5
+        return ((self.x1 - x_clique)**2 + (self.y1 - y_clique)**2)**0.5 <= raio
 
-        if ((self.x1 - x_clique)**2 + (self.y1 - y_clique)**2)**0.5 <= raio :
-            return True
-        return False
+    def obter_limites(self):
+        raio = ((self.x1 - self.x2)**2 + (self.y1 - self.y2)**2)**0.5
+        return (self.x1 - raio, self.y1 - raio, self.x1 + raio, self.y1 + raio)
 
 class Linha(Figura):
     def desenhar(self, canvas, tracejado=None):
@@ -240,7 +241,8 @@ class PoligonoRegular(Figura):
         if raio == 0:
             return [(self.x1, self.y1)]
 
-        angulo_inicial = -math.pi / 2
+        angulo_inicial = math.atan2(self.y2 - self.y1, self.x2 - self.x1)
+
         pontos = []
         for i in range(self.lados):
             angulo = angulo_inicial + 2 * math.pi * i / self.lados
